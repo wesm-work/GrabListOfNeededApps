@@ -5,27 +5,27 @@ $breakLine = ""
 $pcName = Read-Host -Prompt "Enter Name of Remote PC: "
 $breakLine
 
+Write-Host "Please wait while the connection is being tested."
+$breakLine
 
 #Test connection to Remote PC
 try {
     $test = Test-Connection -ComputerName $pcName
+    #Get List of Applications installed on Remote PC
+    $appList = Get-WmiObject Win32_Product -ComputerName $pcName | Select-Object Name,Version
 }
-catch [System.Net.NetworkInformation.PingException] {
-    Write-Host "Testing connection..."
-    Start-Sleep -Seconds 5
-}
-
-if (!$test) {
+catch {
     Write-Host "The Remote PC can't be reached. Make sure that the PC is connected to the Network."
+    Start-Sleep -Seconds 10
     break
 }
-else {
+
+if ($test) {
     Write-Host "Connection to the remote PC is successful."
     $breakLine
     Write-Host "Generating list of needed apps...."
     $breakLine
     Start-Sleep -Seconds 5
-
 }
 
 #Get List of Applications installed on Remote PC
@@ -63,7 +63,7 @@ Compare-Object -ReferenceObject $file1 -DifferenceObject $file2 -Property Name, 
 
 #Create sorted CSV for Apps that are missing from Local PC
 $csv = Import-CSV "C:\PCR Tool Logs\AppComparison.csv" 
-$neededApps = $csv | Where-Object { $_.SideIndicator -eq '<=' } | export-csv "C:\PCR Tool Logs\NeededApps.csv" -NoTypeInformation
+$csv | Where-Object { $_.SideIndicator -eq '<=' } | export-csv "C:\PCR Tool Logs\NeededApps.csv" -NoTypeInformation
 
 #Show CSV with the sorted items
 Invoke-Item "C:\PCR Tool Logs\NeededApps.csv"
