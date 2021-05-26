@@ -41,19 +41,18 @@ catch
 $appList | Export-CSV -Path "C:\PCR Tool Logs\VersionList.csv"
 
 #Create CSV of Apps installed on Local PC
-$localAppList | Export-CSV -Path "C:\PCR Tool Logs\localAppList.csv"
+$localAppList | Export-CSV -Path "C:\PCR Tool Logs\LocalAppList.csv"
 
 #Create Compare Objects
 $file1 = Import-Csv -Path "C:\PCR Tool Logs\VersionList.csv"
-$file2 = Import-Csv -Path "C:\PCR Tool Logs\localAppList.csv"
+$file2 = Import-Csv -Path "C:\PCR Tool Logs\LocalAppList.csv"
 
 #Compare CSVs against each other
-Compare-Object -ReferenceObject $file1 -DifferenceObject $file2 -Property Name -IncludeEqual | Export-CSV -Path "C:\PCR Tool Logs\AppComparison.csv"
+Compare-Object -ReferenceObject $file1 -DifferenceObject $file2 -Property Name, Version -IncludeEqual | Export-CSV -Path "C:\PCR Tool Logs\AppComparison.csv"
 
 #Create sorted CSV for Apps that are missing from Local PC
 $csv = Import-CSV "C:\PCR Tool Logs\AppComparison.csv" 
-$csv | Where-Object { $_.SideIndicator -eq '<=' } | export-csv "C:\PCR Tool Logs\NeededApps.csv" -NoTypeInformation
+$neededApps = $csv | Where-Object { $_.SideIndicator -eq '<=' } | export-csv "C:\PCR Tool Logs\NeededApps.csv" -NoTypeInformation
 
 #Show CSV with the sorted items
 Invoke-Item "C:\PCR Tool Logs\NeededApps.csv"
-
