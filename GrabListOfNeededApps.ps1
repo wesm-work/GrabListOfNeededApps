@@ -1,8 +1,10 @@
 #variables
-$break = ""
+$breakLine = ""
 
 #Get name of Remote PC with installed apps
 $pcName = Read-Host -Prompt "Enter Name of Remote PC: "
+$breakLine
+
 
 #Test connection to Remote PC
 try {
@@ -17,6 +19,14 @@ if (!$test) {
     Write-Host "The Remote PC can't be reached. Make sure that the PC is connected to the Network."
     break
 }
+else {
+    Write-Host "Connection to the remote PC is successful."
+    $breakLine
+    Write-Host "Generating list of needed apps...."
+    $breakLine
+    Start-Sleep -Seconds 5
+
+}
 
 #Get List of Applications installed on Remote PC
 $appList = Get-WmiObject Win32_Product -ComputerName $pcName | Select-Object Name,Version
@@ -28,13 +38,14 @@ $localAppList = Get-WmiObject Win32_Product | Select-Object Name,Version
 $ErrorActionPreference = "Stop"
 try {
     New-Item -Path "C:\" -Name "PCR Tool Logs" -ItemType "directory"
-    $break
-    $break
+    $breakLine
+    $breakLine
 }
 catch  
 {
-    Write-Output "Processing..."
-    $break
+    Write-Output "Log directory has already been created. Skipping step."
+    $breakLine
+    $breakLine
 }
 
 #Create CSV of Apps installed on Remote PC 
