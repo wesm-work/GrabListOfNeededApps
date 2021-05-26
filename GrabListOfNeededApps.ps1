@@ -42,3 +42,5 @@ $csv | Where-Object { $_.SideIndicator -eq '<=' } | export-csv "C:\PCR Tool Logs
 
 #Show CSV with the sorted items
 Invoke-Item "C:\PCR Tool Logs\NeededApps.csv"
+
+#This is the end of the script
