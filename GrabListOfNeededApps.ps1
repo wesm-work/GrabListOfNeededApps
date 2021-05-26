@@ -4,6 +4,20 @@ $break = ""
 #Get name of Remote PC with installed apps
 $pcName = Read-Host -Prompt "Enter Name of Remote PC: "
 
+#Test connection to Remote PC
+try {
+    $test = Test-Connection -ComputerName $pcName
+}
+catch [System.Net.NetworkInformation.PingException] {
+    Write-Host "Testing connection..."
+    Start-Sleep -Seconds 5
+}
+
+if (!$test) {
+    Write-Host "The Remote PC can't be reached. Make sure that the PC is connected to the Network."
+    break
+}
+
 #Get List of Applications installed on Remote PC
 $appList = Get-WmiObject Win32_Product -ComputerName $pcName | Select-Object Name,Version
 
