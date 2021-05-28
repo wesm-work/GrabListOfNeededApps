@@ -22,7 +22,7 @@ $breakLine
         break
     }
 
-    if ($test) {
+    if ($test -and $appList) {
         Write-Host "Connection to the remote PC is successful."
         $breakLine
         Write-Host "Generating list of needed apps...."
